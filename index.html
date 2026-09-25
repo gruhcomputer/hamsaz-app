@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>هم‌ساز (همساز) — راهنمای گفت‌وگوی پیش از ازدواج</title>
+<meta name="description" content="هم‌ساز برای زوج‌هایی است که پیش از ازدواج می‌خواهند بدانند دربارهٔ چه چیزهایی باید حرف بزنند — و چطور. بدون درصد تناسب، بدون اینترنت، بدون حساب کاربری.">
+<meta property="og:title" content="هم‌ساز — راهنمای گفت‌وگوی پیش از ازدواج">
+<meta property="og:description" content="نقشهٔ تفاوت‌های شما و همسر آینده‌تان، و پرسش‌هایی که باید با هم مطرح کنید. پاسخ‌ها هرگز از گوشی خارج نمی‌شوند.">
+<meta property="og:image" content="assets/cover.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<link rel="icon" href="assets/icon.png">
+<style>
+  :root{
+    --bg:#ffffff; --bg-soft:#f6f7fb; --card:#ffffff; --line:#e4e7ee;
+    --text:#161a23; --muted:#5c6475; --accent:#2f6df6; --accent-soft:#e8efff;
+    --warn-bg:#fff7ed; --warn-line:#f2c98a;
+    --shadow:0 1px 2px rgba(20,25,40,.06),0 8px 24px rgba(20,25,40,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f131c; --bg-soft:#151b27; --card:#161d2a; --line:#27303f;
+      --text:#eef1f7; --muted:#a2acc0; --accent:#6f9bff; --accent-soft:#1b2740;
+      --warn-bg:#2a2013; --warn-line:#6b5327;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f131c; --bg-soft:#151b27; --card:#161d2a; --line:#27303f;
+    --text:#eef1f7; --muted:#a2acc0; --accent:#6f9bff; --accent-soft:#1b2740;
+    --warn-bg:#2a2013; --warn-line:#6b5327;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:Vazirmatn,"IRANSans","IRANYekan","Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;
+    line-height:1.9; font-size:16px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 16px}
+  a{color:var(--accent)}
+  header{padding:56px 0 40px; text-align:center}
+  .logo{width:104px;height:104px;border-radius:24px;box-shadow:var(--shadow);display:block;margin:0 auto 20px}
+  h1{font-size:30px; margin:0 0 10px; letter-spacing:-.2px}
+  .alt{color:var(--muted); font-size:15px; margin:0 0 14px}
+  .lead{font-size:19px; margin:0 auto 28px; max-width:620px}
+  .cta{
+    display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff;
+    text-decoration:none; padding:14px 26px; border-radius:14px; font-size:17px; font-weight:600;
+    box-shadow:var(--shadow);
+  }
+  .cta:hover{filter:brightness(1.07)}
+  .note{color:var(--muted); font-size:14px; margin-top:14px}
+  section{padding:38px 0; border-top:1px solid var(--line)}
+  h2{font-size:22px; margin:0 0 18px}
+  h3{font-size:17px; margin:0 0 6px}
+  p{margin:0 0 14px}
+  .muted{color:var(--muted)}
+  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow:var(--shadow)}
+  .card p{margin:0; color:var(--muted); font-size:15px}
+  .steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:14px}
+  .steps li{
+    background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px;
+    box-shadow:var(--shadow);
+  }
+  .steps li::before{
+    counter-increment:s; content:counter(s);
+    display:inline-flex; align-items:center; justify-content:center;
+    width:30px;height:30px;border-radius:50%; background:var(--accent-soft); color:var(--accent);
+    font-weight:700; font-size:15px; margin-bottom:8px;
+  }
+  .steps p{margin:0}
+  .callout{background:var(--warn-bg); border:1px solid var(--warn-line); border-radius:16px; padding:18px}
+  .callout p:last-child{margin:0}
+  .shots{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+  .shots figure{margin:0}
+  .shots img{width:100%; height:auto; border-radius:14px; border:1px solid var(--line); box-shadow:var(--shadow); display:block}
+  .shots figcaption{color:var(--muted); font-size:13px; text-align:center; margin-top:8px}
+  .tags{display:flex; flex-wrap:wrap; gap:8px; padding:0; margin:0; list-style:none}
+  .tags li{background:var(--bg-soft); border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:14px; color:var(--muted)}
+  footer{padding:36px 0 56px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; text-align:center}
+  footer a{color:var(--muted)}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.9em; direction:ltr; display:inline-block}
+  @media (max-width:520px){
+    header{padding:40px 0 30px}
+    h1{font-size:25px}
+    .lead{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <img class="logo" src="assets/icon.png" alt="آیکون برنامهٔ هم‌ساز">
+    <h1>هم‌ساز</h1>
+    <p class="alt">(همساز) — Hamsaz</p>
+    <p class="lead">برای زوج‌هایی که پیش از ازدواج می‌خواهند بدانند دربارهٔ چه چیزهایی باید حرف بزنند — و چطور.</p>
+    <a class="cta" href="https://cafebazaar.ir/app/ir.amgroup.hamsaz">دریافت از کافه‌بازار</a>
+    <p class="note">اندروید ۶ به بالا · حدود ۲۴ مگابایت · پرسش‌نامهٔ فردی رایگان</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>آنچه هم‌ساز نمی‌گوید</h2>
+    <div class="callout">
+      <p>هیچ «درصد تناسب» یا نمرهٔ قبولی و ردی در کار نیست.</p>
+      <p>بزرگ‌ترین پژوهش انجام‌شده در این زمینه (ژوئل و همکاران، ۲۰۲۰ — روی ۱۱٬۱۹۶ زوج) نشان داد شباهت شخصیتی دو نفر عملاً چیزی دربارهٔ آیندهٔ رابطه پیش‌بینی نمی‌کند. هر اپلیکیشنی که عددی به شما بدهد، عددی ساخته است.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>آنچه هم‌ساز می‌دهد</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>نقشهٔ تفاوت‌ها</h3>
+        <p>کجا با هم فاصله دارید، و آن فاصله معمولاً به چه شکلی در زندگی مشترک خودش را نشان می‌دهد.</p>
+      </div>
+      <div class="card">
+        <h3>پرسش‌های مشخص</h3>
+        <p>به‌جای نتیجه‌گیری، فهرستی از پرسش‌هایی که بهتر است همین حالا با هم مطرح کنید.</p>
+      </div>
+      <div class="card">
+        <h3>پروفایل شخصی</h3>
+        <p>پیش از گزارش مشترک، یک پروفایل فردی از ویژگی‌های خودتان می‌گیرید — نوعی خودشناسی.</p>
+      </div>
+      <div class="card">
+        <h3>گزارش قابل نگه‌داشتن</h3>
+        <p>گزارش با نام خودتان نوشته می‌شود، در برنامه بایگانی می‌شود و می‌توانید به‌صورت PDF بفرستید.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>چطور کار می‌کند</h2>
+    <ol class="steps">
+      <li><h3>هر نفر روی گوشی خودش پاسخ می‌دهد</h3><p class="muted">۵۶ پرسش. بدون حساب کاربری و بدون اینترنت.</p></li>
+      <li><h3>یکی کد تصویری می‌سازد، دیگری آن را اسکن می‌کند</h3><p class="muted">انتقال پاسخ‌ها فقط از طریق همین کد QR انجام می‌شود؛ هیچ سروری در میان نیست.</p></li>
+      <li><h3>گزارش مشترک روی همان گوشی ساخته می‌شود</h3><p class="muted">تمام محاسبه داخل خود برنامه انجام می‌شود.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>پرسش‌ها از کجا آمده‌اند</h2>
+    <p class="muted">پرسش‌ها از سه ابزار شناخته‌شده گرفته شده‌اند: <strong>صفات شخصیتی</strong>، <strong>سبک دلبستگی</strong>، و <strong>هشت حوزهٔ زندگی مشترک</strong>:</p>
+    <ul class="tags">
+      <li>پول</li><li>خانواده</li><li>فرزند</li><li>نقش‌ها</li>
+      <li>مذهب</li><li>اوقات فراغت</li><li>صمیمیت</li><li>شیوهٔ حل اختلاف</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>حریم خصوصی</h2>
+    <div class="grid">
+      <div class="card"><h3>بدون دسترسی اینترنت</h3><p>برنامه اصلاً مجوز اینترنت ندارد. این را می‌توانید در فهرست دسترسی‌های برنامه در کافه‌بازار ببینید.</p></div>
+      <div class="card"><h3>بدون سرور و بدون حساب</h3><p>هیچ داده‌ای جایی ذخیره یا ارسال نمی‌شود. نه ثبت‌نام لازم است، نه شمارهٔ موبایل.</p></div>
+      <div class="card"><h3>دوربین فقط برای اسکن</h3><p>دوربین تنها هنگام فشردن دکمهٔ اسکن روشن می‌شود و هیچ تصویری ذخیره نمی‌شود. کد را دستی هم می‌توانید وارد کنید.</p></div>
+      <div class="card"><h3>پاک‌کردن با یک دکمه</h3><p>در هر لحظه می‌توانید همهٔ پاسخ‌ها و گزارش‌ها را از گوشی حذف کنید.</p></div>
+    </div>
+    <p style="margin-top:16px"><a href="privacy.html">متن کامل سیاست حریم خصوصی</a></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>تصاویر برنامه</h2>
+    <div class="shots">
+      <figure><img src="assets/01-welcome.png" alt="صفحهٔ خوش‌آمدگویی هم‌ساز" loading="lazy"><figcaption>خوش‌آمدگویی</figcaption></figure>
+      <figure><img src="assets/04-questionnaire.png" alt="صفحهٔ پرسش‌نامه" loading="lazy"><figcaption>پرسش‌نامه</figcaption></figure>
+      <figure><img src="assets/06-profile.png" alt="پروفایل شخصی" loading="lazy"><figcaption>پروفایل شخصی</figcaption></figure>
+      <figure><img src="assets/10-report-map.png" alt="نقشهٔ تفاوت‌ها در گزارش مشترک" loading="lazy"><figcaption>نقشهٔ تفاوت‌ها</figcaption></figure>
+      <figure><img src="assets/13-report-domains.png" alt="حوزه‌های زندگی مشترک در گزارش" loading="lazy"><figcaption>حوزه‌های زندگی</figcaption></figure>
+      <figure><img src="assets/16-settings.png" alt="تنظیمات و پاک‌کردن داده‌ها" loading="lazy"><figcaption>تنظیمات</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>هزینه</h2>
+    <div class="grid">
+      <div class="card"><h3>پرسش‌نامه و گزارش شخصی</h3><p>رایگان، بدون محدودیت زمانی.</p></div>
+      <div class="card"><h3>گزارش مشترک زوج</h3><p>خرید یک‌باره از طریق پرداخت درون‌برنامه‌ای کافه‌بازار. اشتراک ماهانه‌ای در کار نیست.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>پشتیبانی</h2>
+    <p>اگر سؤال، اشکال یا پیشنهادی دارید بنویسید: <a href="mailto:amgroup2301@gmail.com">amgroup2301@gmail.com</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>هم‌ساز · منتشرشده توسط گروه فرزانه · بستهٔ <code>ir.amgroup.hamsaz</code></p>
+    <p><a href="https://cafebazaar.ir/app/ir.amgroup.hamsaz">صفحهٔ برنامه در کافه‌بازار</a> · <a href="privacy.html">حریم خصوصی</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
