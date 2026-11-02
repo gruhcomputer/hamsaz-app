@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دانلودیار — ذخیرهٔ ویدیو و عکس از لینک</title>
+<meta name="description" content="دانلودیار لینکی را که کپی کرده‌اید می‌گیرد و ویدیو، عکس یا ریلز آن را در گالری گوشی ذخیره می‌کند. رایگان، بدون اشتراک، بدون تبلیغات آزاردهنده.">
+<meta property="og:title" content="دانلودیار — ذخیرهٔ ویدیو و عکس از لینک">
+<meta property="og:description" content="رایگان، بدون اشتراک، و بدون گرفتن دسترسی اضافه.">
+<meta property="og:image" content="assets/icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<link rel="icon" href="assets/icon.png">
+<style>
+  /* No JavaScript, no tracker, no external font — same rule as the هم‌ساز
+     site, so the page opens on any connection. The Persian font falls back
+     to whatever the device has. */
+  :root{
+    --bg:#ffffff; --bg-soft:#f6f7fb; --card:#ffffff; --line:#e4e7ee;
+    --text:#161a23; --muted:#5c6475; --accent:#6c4df6; --accent-soft:#eee9ff;
+    --ok-bg:#eafaf3; --ok-line:#9ad9bf;
+    --shadow:0 1px 2px rgba(20,25,40,.06),0 8px 24px rgba(20,25,40,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d0f14; --bg-soft:#151b27; --card:#171a22; --line:#27303f;
+      --text:#f2f4f8; --muted:#a7aebe; --accent:#9b84ff; --accent-soft:#201b3a;
+      --ok-bg:#12271f; --ok-line:#2f5c48;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d0f14; --bg-soft:#151b27; --card:#171a22; --line:#27303f;
+    --text:#f2f4f8; --muted:#a7aebe; --accent:#9b84ff; --accent-soft:#201b3a;
+    --ok-bg:#12271f; --ok-line:#2f5c48;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:Vazirmatn,"IRANSans","IRANYekan","Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;
+    line-height:1.9; font-size:16px;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 16px}
+  a{color:var(--accent)}
+  header{padding:56px 0 40px; text-align:center}
+  .logo{width:104px;height:104px;border-radius:24px;box-shadow:var(--shadow);display:block;margin:0 auto 20px}
+  h1{font-size:30px; margin:0 0 10px; letter-spacing:-.2px}
+  .lead{font-size:19px; margin:0 auto 28px; max-width:620px}
+  .cta{
+    display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff;
+    text-decoration:none; padding:14px 26px; border-radius:14px; font-size:17px; font-weight:600;
+    box-shadow:var(--shadow);
+  }
+  .cta:hover{filter:brightness(1.07)}
+  .note{color:var(--muted); font-size:14px; margin-top:14px}
+  section{padding:38px 0; border-top:1px solid var(--line)}
+  h2{font-size:22px; margin:0 0 18px}
+  h3{font-size:17px; margin:0 0 6px}
+  p{margin:0 0 14px}
+  .muted{color:var(--muted)}
+  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px}
+  /* Version block — the reason this page exists for us as well as for users. */
+  .version{
+    background:var(--ok-bg); border:1px solid var(--ok-line);
+    border-radius:16px; padding:18px 20px;
+  }
+  .version dl{display:grid; grid-template-columns:auto 1fr; gap:6px 14px; margin:0}
+  .version dt{color:var(--muted); font-size:14px}
+  .version dd{margin:0; font-weight:600}
+  /* Version numbers are Latin digits inside an RTL page. */
+  .ltr{direction:ltr; unicode-bidi:isolate; display:inline-block}
+  table{width:100%; border-collapse:collapse; font-size:15px}
+  th,td{text-align:right; padding:9px 8px; border-bottom:1px solid var(--line)}
+  th{color:var(--muted); font-weight:600; font-size:14px}
+  footer{padding:34px 0 60px; color:var(--muted); font-size:14px; border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <img class="logo" src="assets/icon.png" alt="آیکون دانلودیار">
+  <h1>دانلودیار</h1>
+  <p class="lead">لینکی را که کپی کرده‌اید می‌گیرد و ویدیو، عکس یا ریلز آن را در گالری گوشی شما ذخیره می‌کند. همین.</p>
+  <a class="cta" href="https://cafebazaar.ir/app/ir.amgroup.instadl">دریافت از کافه‌بازار</a>
+  <p class="note">رایگان، بدون حق اشتراک، بدون تبلیغات آزاردهنده.</p>
+</header>
+
+<section id="version">
+  <h2>آخرین نسخه</h2>
+  <div class="version">
+    <dl>
+      <dt>شمارهٔ نسخه</dt>
+      <dd><span class="ltr">0.1.0</span></dd>
+      <dt>شمارهٔ ساخت</dt>
+      <dd><span class="ltr">1</span></dd>
+      <dt>تاریخ انتشار</dt>
+      <dd>—</dd>
+      <dt>کمترین نسخهٔ پشتیبانی‌شده</dt>
+      <dd><span class="ltr">0</span></dd>
+    </dl>
+  </div>
+  <p class="note">
+    این جدول باید با <a href="app-config.json">app-config.json</a> یکی باشد.
+    برنامه همان فایل را می‌خواند؛ این صفحه فقط نسخهٔ خواندنی آن است.
+  </p>
+
+  <h3 style="margin-top:26px">تاریخچهٔ نسخه‌ها</h3>
+  <table>
+    <thead><tr><th>نسخه</th><th>ساخت</th><th>تاریخ</th><th>تغییرات</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="ltr">0.1.0</span></td>
+        <td><span class="ltr">1</span></td>
+        <td>—</td>
+        <td>نسخهٔ اول.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>چرا ممکن است یک روز کار نکند؟</h2>
+  <p>
+    اینستاگرام هر چند وقت یک‌بار ساختار داخلی صفحه‌هایش را عوض می‌کند. این کار از سمت
+    خودِ اینستاگرام انجام می‌شود و از قبل به کسی خبر نمی‌دهند. وقتی این اتفاق بیفتد،
+    برنامه دیگر نمی‌تواند فایل را پیدا کند و پیام خطا می‌دهد.
+  </p>
+  <p>
+    در این حالت ما نسخهٔ تازه‌ای منتشر می‌کنیم که با ساختار جدید هماهنگ است.
+    <strong>پس اگر برنامه ناگهان کار نکرد، اول از همه آن را به آخرین نسخه بروزرسانی کنید</strong>
+    — معمولاً همین کار مشکل را حل می‌کند. شمارهٔ آخرین نسخه بالای همین صفحه نوشته شده.
+  </p>
+  <p class="muted">
+    اگر پیام «به اینستاگرام وصل نشدم» دیدید، موضوع فرق می‌کند: این یعنی اتصال اینترنت شما
+    در آن لحظه به اینستاگرام نرسیده است و با بروزرسانی برنامه حل نمی‌شود.
+  </p>
+</section>
+
+<section>
+  <h2>چه چیزی این برنامه را متفاوت می‌کند</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>رایگان، بدون اشتراک</h3>
+      <p class="muted">هیچ قابلیتی قفل نیست. نسخهٔ «حرفه‌ای» وجود ندارد.</p>
+    </div>
+    <div class="card">
+      <h3>بدون تبلیغات آزاردهنده</h3>
+      <p class="muted">هیچ پنجرهٔ ناگهانی و هیچ ویدیوی اجباری. فقط یک نوار کوچک پایین صفحه برای معرفی برنامه‌های خودمان.</p>
+    </div>
+    <div class="card">
+      <h3>بدون دسترسی اضافه</h3>
+      <p class="muted">فقط دسترسی اینترنت. به مخاطبین، دوربین، موقعیت مکانی و فایل‌های شما کاری ندارد.</p>
+    </div>
+    <div class="card">
+      <h3>بدون ورود به حساب</h3>
+      <p class="muted">هیچ‌وقت نام کاربری و رمز شما را نمی‌خواهد.</p>
+    </div>
+    <div class="card">
+      <h3>کلیپ‌بورد با اجازه</h3>
+      <p class="muted">بار اول می‌پرسد، و بعد هم فقط پیشنهاد می‌دهد؛ تا دکمه را نزنید چیزی دانلود نمی‌شود.</p>
+    </div>
+    <div class="card">
+      <h3>پست‌های چندعکسی</h3>
+      <p class="muted">همهٔ عکس‌ها و ویدیوهای یک پست، با یک دکمه و شماره‌گذاری درست.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>چه چیزی را ذخیره نمی‌کند</h2>
+  <p>
+    فقط پست‌های عمومی. پست حساب‌های خصوصی و استوری‌ها را ذخیره نمی‌کند — نه به این دلیل
+    که نمی‌تواند، به این دلیل که صاحبشان آن‌ها را برای ذخیره شدن نگذاشته است.
+  </p>
+  <p class="muted">
+    محتوای دیگران را فقط برای استفادهٔ شخصی خودتان ذخیره کنید. حق هر اثر متعلق به سازندهٔ
+    آن است و بازنشر آن بدون اجازه درست نیست.
+  </p>
+</section>
+
+<footer>
+  <p>
+    ساختهٔ AM Group · پشتیبانی:
+    <a href="mailto:amgroup2301@gmail.com">amgroup2301@gmail.com</a> ·
+    <a href="privacy.html">سیاست حریم خصوصی</a>
+  </p>
+</footer>
+
+</div>
+</body>
+</html>

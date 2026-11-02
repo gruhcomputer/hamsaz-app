@@ -1,0 +1,70 @@
+{
+  "_comment": [
+    "Runtime config for دانلودیار (ir.amgroup.instadl).",
+    "",
+    "The app fetches this file once a day and caches it. Everything in it is",
+    "optional: a fetch that fails, times out, or returns malformed JSON leaves",
+    "the app running on its compiled-in defaults. That is deliberate, because",
+    "this host is not always reachable from Iran.",
+    "",
+    "HOW TO EDIT AFTER A RELEASE — see UPDATING.md next to this file.",
+    "",
+    "update.latestVersionCode      the versionCode now on Bazaar",
+    "update.minSupportedVersionCode  builds BELOW this are told they must",
+    "                              update. Raise it ONLY when an older build",
+    "                              genuinely cannot work any more. A forced",
+    "                              update that is merely convenient for us",
+    "                              bricks the app for someone who cannot",
+    "                              reach Bazaar right now.",
+    "update.message                optional one line shown instead of the",
+    "                              stock sentence. Plain text, no markup.",
+    "graphqlDocId                  set this when Instagram rotates its doc_id",
+    "                              and reels start resolving to a poster",
+    "                              image only. Fixes the app without waiting",
+    "                              days for a Bazaar review.",
+    "promo                         the apps shown in the bottom bar; same",
+    "                              shape as assets/promo/apps.json in the",
+    "                              project. NEVER offer a reward for",
+    "                              installing — Bazaar bans that outright."
+  ],
+
+  "update": {
+    "latestVersionCode": 1,
+    "latestVersionName": "1.0.0",
+    "minSupportedVersionCode": 0,
+    "message": null
+  },
+
+  "graphqlDocId": null,
+
+  "promo": {
+    "version": 1,
+    "rotateSeconds": 9,
+    "apps": [
+      {
+        "id": "hamsaz",
+        "package": "ir.amgroup.hamsaz",
+        "title": "هم‌ساز",
+        "pitch": "۳۰۰ پرسش گفت‌وگو برای پیش از ازدواج",
+        "accent": "#6C4DF6",
+        "enabled": true
+      },
+      {
+        "id": "khodshenasi",
+        "package": "ir.amgroup.khodshenasi",
+        "title": "خودشناسی",
+        "pitch": "۴۸ آزمون شخصیت با تفسیر فارسی",
+        "accent": "#0E9F6E",
+        "enabled": false
+      },
+      {
+        "id": "sezame",
+        "package": "ir.sezame.app",
+        "title": "سزامی",
+        "pitch": "خرید از فروشگاه سزامی و پیگیری سلامت",
+        "accent": "#00B56E",
+        "enabled": false
+      }
+    ]
+  }
+}

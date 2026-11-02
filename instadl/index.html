@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پنل مدیریت دانلودیار</title>
+<style>
+  /* رنگ، فونت، اندازه‌ها و شکل دکمه‌ها از افزونهٔ str-sezame گرفته شده‌اند
+     (assets/css/style.css آن افزونه) تا دو پنل یک‌دست دیده شوند. فایل فونت
+     IranSans کنار همین صفحه کپی شده، چون صفحه‌ای که با دوبار کلیک باز می‌شود
+     نمی‌تواند به پوشهٔ افزونه برسد. */
+  @font-face{
+    font-family:"IranSans";
+    src:url(iransansweb.woff2) format("woff2");
+    font-weight:400;font-style:normal;font-display:swap;
+  }
+  :root{
+    --bg:#f6fbf9; --surface:#fff; --surface2:#eaf7ef; --line:#ccc;
+    --text:#063322; --muted:#4b6b5a; --title:#1fab6b;
+    --accent:#00b56e; --accent-hover:#00985c;
+    --ok:#1fab6b; --danger:#b05050;
+    --shadow:0 8px 20px rgba(10,20,15,.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"IranSans",Tahoma,sans-serif;
+    line-height:1.9; font-size:15px;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:28px 16px 80px}
+  h1{font-size:22px;font-weight:900;margin:0 0 4px}
+  h2{font-size:18px;font-weight:900;color:var(--title);
+     margin:28px 0 10px;padding-top:18px;border-top:1px solid #d7f0df}
+  .muted{color:var(--muted);font-size:13px}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+  input,textarea,select{
+    width:100%;background:#fff;color:var(--text);border:1px solid var(--line);
+    border-radius:8px;padding:8px 12px;
+    font-family:"IranSans",Tahoma,sans-serif;font-size:14px;
+  }
+  input[type=checkbox]{width:auto}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  .ltr{direction:ltr;text-align:left}
+  button{
+    background:var(--accent);color:#fff;border:none;border-radius:8px;
+    padding:8px 14px;font:inherit;font-size:14px;cursor:pointer;transition:.2s;
+  }
+  button:hover{background:var(--accent-hover)}
+  button.ghost{background:#fff;color:#00985c;border:1px solid var(--accent)}
+  button.ghost:hover{background:#eaf7ef}
+  button.danger{background:#fff;border:1px solid var(--danger);color:var(--danger)}
+  button.danger:hover{background:#fdeaea}
+  button:disabled,button:disabled:hover{background:#b9c6bf;color:#f2f2f2;cursor:not-allowed}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .card{background:var(--surface);padding:14px;border-radius:10px;
+        box-shadow:var(--shadow);margin-bottom:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .hidden{display:none}
+  .note{background:#eaf7ef;border:1px solid #d7f0df;color:#245a35;
+        border-radius:8px;padding:12px;font-size:13px;margin:12px 0}
+  /* پیش‌نمایش عمداً تیره مانده: تم خود برنامه تیره است
+     (lib/ui/theme.dart)، پس پیش‌نمایش روشن چیزی را نشان می‌داد که کاربر
+     نمی‌بیند. این کادر ماکت گوشی است، نه بخشی از پنل. */
+  .preview{background:#0d0f14;border:1px solid #0d0f14;border-radius:16px;
+           padding:14px;color:#f2f4f8}
+  .bar{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;border:1px solid}
+  .bar .badge{width:38px;height:38px;border-radius:12px;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;
+    object-fit:cover;overflow:hidden}
+  .bar .texts{flex:1;min-width:0}
+  .bar .lbl{font-size:10px;color:#a7aebe}
+  .bar .pitch{font-size:13px;font-weight:600;overflow:hidden;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical}
+  code{background:var(--surface2);padding:2px 6px;border-radius:6px;font-size:12.5px}
+  pre{background:var(--surface2);padding:12px;border-radius:8px;overflow:auto;font-size:12.5px}
+  .ok{color:var(--ok)}
+  .err{color:var(--danger)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ ورود ============ -->
+<div id="login">
+  <h1>پنل مدیریت دانلودیار</h1>
+  <p class="muted">برای ادامه وارد شوید.</p>
+  <div class="card" style="max-width:380px">
+    <label>نام کاربری</label>
+    <input id="u" class="ltr" autocomplete="username">
+    <label>رمز عبور</label>
+    <input id="p" type="password" class="ltr" autocomplete="current-password">
+    <div class="row" style="margin-top:14px">
+      <button onclick="doLogin()">ورود</button>
+      <span id="loginMsg" class="err"></span>
+    </div>
+  </div>
+  <div class="note">
+    <strong>این قفل جلوی رهگذر را می‌گیرد، نه یک آدم مصمم را.</strong> این صفحه
+    روی یک سایت ایستا و عمومی است و سروری پشتش نیست، پس رمز فقط به شکل هش در
+    همین صفحه نگهداری می‌شود و کسی که فایل را بخواند می‌تواند آفلاین رویش رمز
+    امتحان کند. به همین دلیل رمزی بگذارید که <strong>جای دیگری استفاده
+    نمی‌کنید</strong>.
+    <br><br>
+    قفل واقعیِ تنظیمات، رمز نیست: <strong>توکن گیت‌هاب</strong> است که هنگام
+    ذخیره می‌خواهیم. بدون آن، حتی کسی که از این قفل رد شود نمی‌تواند چیزی را
+    روی سایت عوض کند.
+  </div>
+</div>
+
+<!-- ============ پنل ============ -->
+<div id="panel" class="hidden">
+  <h1>پنل مدیریت دانلودیار</h1>
+  <p class="muted">
+    این صفحه فایل <code>app-config.json</code> را می‌سازد. برنامه روزی یک بار
+    آن را می‌خواند.
+  </p>
+
+  <div class="row">
+    <button class="ghost" onclick="document.getElementById('file').click()">بارگذاری فایل فعلی</button>
+    <input type="file" id="file" accept=".json,application/json" class="hidden" onchange="loadFile(this)">
+    <button class="ghost" onclick="loadFromSite()">خواندن از سایت</button>
+    <span id="loadMsg" class="muted"></span>
+  </div>
+
+  <h2>تبلیغ‌ها</h2>
+  <p class="muted">
+    هر مورد یک کارت در نوار پایین برنامه است. اگر چند مورد فعال باشد، نوار هر
+    چند ثانیه بینشان می‌چرخد.
+  </p>
+  <div id="items"></div>
+  <button class="ghost" onclick="addItem()">+ افزودن مورد تازه</button>
+
+  <h2>پیش‌نمایش</h2>
+  <p class="muted">دقیقاً همان چیزی که در برنامه دیده می‌شود:</p>
+  <div class="preview" id="preview"></div>
+
+  <h2>چرخش</h2>
+  <label>هر چند ثانیه عوض شود (۴ تا ۶۰)</label>
+  <input id="rotate" type="number" min="4" max="60" class="ltr" style="max-width:140px" oninput="renderLive()">
+
+  <h2>نسخهٔ برنامه</h2>
+  <div class="grid2">
+    <div>
+      <label>آخرین نسخه — شمارهٔ ساخت (versionCode)</label>
+      <input id="vcode" type="number" class="ltr" oninput="renderLive()">
+    </div>
+    <div>
+      <label>آخرین نسخه — نام نسخه (مثلاً 1.0.0)</label>
+      <input id="vname" class="ltr" oninput="renderLive()">
+    </div>
+  </div>
+  <label>کمترین نسخهٔ پشتیبانی‌شده — پایین‌تر از این «بروزرسانی اجباری» می‌بیند</label>
+  <input id="vmin" type="number" class="ltr" style="max-width:200px" oninput="renderLive()">
+  <div class="note">
+    این عدد را <strong>فقط وقتی</strong> بالا ببرید که نسخهٔ قدیمی واقعاً از کار
+    افتاده باشد. کاربری که همان لحظه به بازار دسترسی ندارد، با این کار اپی در
+    دستش می‌ماند که خودش کار می‌کرد.
+  </div>
+  <label>پیام اختیاری همراه بروزرسانی (خالی = جملهٔ پیش‌فرض)</label>
+  <textarea id="vmsg" rows="2" oninput="renderLive()"></textarea>
+
+  <h2>پیشرفته</h2>
+  <label>graphqlDocId — فقط وقتی لازم است که ریلزها فقط عکس بدهند</label>
+  <input id="docid" class="ltr" placeholder="خالی بگذارید" oninput="renderLive()">
+
+  <h2>ذخیره روی سایت</h2>
+  <p class="muted">
+    این دکمه همان فایلی را می‌نویسد که برنامه می‌خواند. از گوشی هم کار می‌کند.
+  </p>
+  <label>توکن گیت‌هاب</label>
+  <input id="tok" type="password" class="ltr" autocomplete="off"
+         placeholder="ghp_… یا github_pat_…">
+  <div class="row" style="margin-top:12px">
+    <button onclick="saveToGithub()" id="pubBtn">ذخیره روی سایت</button>
+    <span id="pubMsg" class="muted"></span>
+  </div>
+  <div class="note">
+    توکن <strong>هیچ‌جا ذخیره نمی‌شود</strong> — نه در این فایل، نه در مخزن. تا
+    وقتی این تب باز است در حافظهٔ مرورگر می‌ماند و با بستن تب پاک می‌شود. اگر
+    جایی لو رفت، در گیت‌هاب باطلش کنید و یکی تازه بسازید؛ هیچ چیز دیگری عوض
+    نمی‌شود. راهنمای ساختن توکن محدود در <code>README.md</code> کنار همین فایل.
+  </div>
+
+  <h2>خروجی دستی</h2>
+  <p class="muted">اگر نخواستید از توکن استفاده کنید:</p>
+  <div class="row">
+    <button class="ghost" onclick="download()">دانلود app-config.json</button>
+    <button class="ghost" onclick="copyJson()">کپی در کلیپ‌بورد</button>
+    <span id="saveMsg" class="ok"></span>
+  </div>
+  <p class="muted" style="margin-top:12px">بعد از دانلود:</p>
+  <pre>cd C:\code\hamsaz-site
+# فایل دانلودشده را جای instadl\app-config.json بگذارید، بعد:
+git add instadl/app-config.json && git commit -m "Update promo config" && git push</pre>
+
+  <h2>JSON نهایی</h2>
+  <pre id="out"></pre>
+</div>
+
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Login. The password is stored as a salted SHA-256 so the plaintext is not
+// sitting in this file. That is NOT security — see the note in the markup —
+// it just means reading the file does not hand someone a password they may
+// have reused elsewhere.
+// ---------------------------------------------------------------------------
+var USER = 'najafizadeh';
+var SALT = 'instadl-admin-v1';
+var HASH = '9edc400a5e8537027b66ff745c40b60ad0e866b20cf3191c85c19ffa29de86d8';
+
+// A self-contained SHA-256. crypto.subtle is only defined in a secure
+// context, and "secure" does not include plain http:// or a data: URL — so
+// relying on it meant the login refused to work at all in those cases
+// (observed: "این مرورگر رمزنگاری ندارد"). This implementation has no such
+// requirement, which matters because the whole point is a file opened by
+// double-clicking it.
+function sha256Hex(ascii){
+  function rr(n, x){ return (x >>> n) | (x << (32 - n)); }
+  var K = [], H = [], i, j, isPrime, p = 2, n;
+  for (i = 0; i < 64;) {
+    for (isPrime = true, j = 2; j * j <= p; j++) if (p % j === 0) { isPrime = false; break; }
+    if (isPrime) {
+      if (i < 8) H[i] = (Math.pow(p, 0.5) % 1 * 0x100000000) | 0;
+      K[i] = (Math.pow(p, 1 / 3) % 1 * 0x100000000) | 0;
+      i++;
+    }
+    p++;
+  }
+  // UTF-8 encode first: the password may contain non-ASCII, and hashing the
+  // raw UTF-16 code units would not match what the server-side tool produced.
+  var utf8 = unescape(encodeURIComponent(ascii));
+  var words = [], len = utf8.length * 8;
+  utf8 += String.fromCharCode(0x80);
+  while (utf8.length % 64 - 56) utf8 += String.fromCharCode(0);
+  for (i = 0; i < utf8.length; i++) {
+    j = utf8.charCodeAt(i);
+    words[i >> 2] |= j << ((3 - i % 4) * 8);
+  }
+  words[words.length] = (len / 0x100000000) | 0;
+  words[words.length] = len;
+
+  var w = [], a, b, c, d, e, f, g, h, T1, T2;
+  for (j = 0; j < words.length;) {
+    a = H[0]; b = H[1]; c = H[2]; d = H[3];
+    e = H[4]; f = H[5]; g = H[6]; h = H[7];
+    for (i = 0; i < 64; i++) {
+      w[i] = i < 16 ? (words[j + i] | 0)
+        : ((rr(17, w[i-2]) ^ rr(19, w[i-2]) ^ (w[i-2] >>> 10)) + (w[i-7] | 0) +
+           (rr(7, w[i-15]) ^ rr(18, w[i-15]) ^ (w[i-15] >>> 3)) + (w[i-16] | 0)) | 0;
+      T1 = (h + (rr(6,e) ^ rr(11,e) ^ rr(25,e)) + ((e & f) ^ (~e & g)) + K[i] + w[i]) | 0;
+      T2 = ((rr(2,a) ^ rr(13,a) ^ rr(22,a)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+      h = g; g = f; f = e; e = (d + T1) | 0;
+      d = c; c = b; b = a; a = (T1 + T2) | 0;
+    }
+    H[0] = (H[0]+a)|0; H[1] = (H[1]+b)|0; H[2] = (H[2]+c)|0; H[3] = (H[3]+d)|0;
+    H[4] = (H[4]+e)|0; H[5] = (H[5]+f)|0; H[6] = (H[6]+g)|0; H[7] = (H[7]+h)|0;
+    j += 16;
+  }
+  var out = '';
+  for (i = 0; i < 8; i++) out += ((H[i] >>> 0).toString(16)).padStart(8, '0');
+  return out;
+}
+
+async function sha256(text){
+  if (crypto && crypto.subtle) {
+    try {
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    } catch (e) { /* fall through to the pure-JS one */ }
+  }
+  return sha256Hex(text);
+}
+
+async function doLogin(){
+  var u = document.getElementById('u').value.trim();
+  var p = document.getElementById('p').value;
+  var msg = document.getElementById('loginMsg');
+  if (u !== USER || (await sha256(SALT + p)) !== HASH) {
+    msg.textContent = 'نام کاربری یا رمز درست نیست.';
+    return;
+  }
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('panel').classList.remove('hidden');
+  if (!state.promo.apps.length) addItem();
+  render();
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && !document.getElementById('login').classList.contains('hidden')) doLogin();
+});
+
+// ---------------------------------------------------------------------------
+// State mirrors app-config.json exactly, so what is exported is what the app
+// expects. Shape documented in UPDATING.md next to this page.
+// ---------------------------------------------------------------------------
+var state = {
+  update: { latestVersionCode: 1, latestVersionName: '1.0.0', minSupportedVersionCode: 0, message: null },
+  graphqlDocId: null,
+  promo: { version: 1, rotateSeconds: 9, apps: [] }
+};
+
+// The one published copy of the config: the app reads this URL, and the
+// «ذخیره روی سایت» button writes the very same file through the GitHub API.
+var OWNER  = 'gruhcomputer';
+var REPO   = 'hamsaz-app';
+var BRANCH = 'main';
+var FILE   = 'instadl/app-config.json';
+var SITE   = 'https://' + OWNER + '.github.io/' + REPO + '/' + FILE;
+
+function addItem(){
+  state.promo.apps.push({
+    id: 'app' + (state.promo.apps.length + 1),
+    package: '', title: '', pitch: '', accent: '#6C4DF6', image: '', enabled: true
+  });
+  render();
+}
+function removeItem(i){ state.promo.apps.splice(i,1); render(); }
+
+function loadFile(input){
+  var f = input.files[0]; if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try { applyConfig(JSON.parse(r.result)); msg('loadMsg','فایل خوانده شد.',true); }
+    catch(e){ msg('loadMsg','فایل JSON معتبر نیست: ' + e.message,false); }
+  };
+  r.readAsText(f);
+}
+
+async function loadFromSite(){
+  msg('loadMsg','در حال خواندن…',true);
+  try {
+    var r = await fetch(SITE, {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    applyConfig(await r.json());
+    msg('loadMsg','از سایت خوانده شد.',true);
+  } catch(e){
+    // Expected while Pages is off, or from a network that cannot reach it.
+    msg('loadMsg','از سایت خوانده نشد (' + e.message + '). فایل را دستی بارگذاری کنید.',false);
+  }
+}
+
+function applyConfig(cfg){
+  if (cfg.update) Object.assign(state.update, cfg.update);
+  state.graphqlDocId = cfg.graphqlDocId || null;
+  if (cfg.promo) {
+    state.promo.rotateSeconds = cfg.promo.rotateSeconds || 9;
+    state.promo.version = cfg.promo.version || 1;
+    state.promo.apps = (cfg.promo.apps || []).map(function(a){
+      return {
+        id: a.id || '', package: a.package || '', title: a.title || '',
+        pitch: a.pitch || '', accent: a.accent || '#6C4DF6',
+        image: a.image || '', enabled: a.enabled !== false
+      };
+    });
+  }
+  fillFields();
+  render();
+}
+
+function fillFields(){
+  document.getElementById('rotate').value = state.promo.rotateSeconds;
+  document.getElementById('vcode').value  = state.update.latestVersionCode;
+  document.getElementById('vname').value  = state.update.latestVersionName || '';
+  document.getElementById('vmin').value   = state.update.minSupportedVersionCode || 0;
+  document.getElementById('vmsg').value   = state.update.message || '';
+  document.getElementById('docid').value  = state.graphqlDocId || '';
+}
+
+function readFields(){
+  var r = parseInt(document.getElementById('rotate').value,10);
+  state.promo.rotateSeconds = isNaN(r) ? 9 : Math.min(60, Math.max(4, r));
+  var vc = parseInt(document.getElementById('vcode').value,10);
+  state.update.latestVersionCode = isNaN(vc) ? 1 : vc;
+  state.update.latestVersionName = document.getElementById('vname').value.trim();
+  var vm = parseInt(document.getElementById('vmin').value,10);
+  state.update.minSupportedVersionCode = isNaN(vm) ? 0 : vm;
+  var m = document.getElementById('vmsg').value.trim();
+  state.update.message = m === '' ? null : m;
+  var d = document.getElementById('docid').value.trim();
+  state.graphqlDocId = d === '' ? null : d;
+}
+
+function field(i, key, label, ph, cls){
+  return '<label>'+label+'</label><input class="'+(cls||'')+'" value="'+esc(state.promo.apps[i][key])+
+         '" placeholder="'+(ph||'')+'" oninput="setField('+i+',\''+key+'\',this.value)">';
+}
+function setField(i,key,val){ state.promo.apps[i][key]=val; renderLive(); }
+function setEnabled(i,val){ state.promo.apps[i].enabled=val; render(); }
+
+function esc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Two levels of redraw. render() rebuilds everything and is used after a
+// structural change (add, remove, load, enable/disable). renderLive() runs on
+// every keystroke and touches only the preview, the warnings and the JSON —
+// rebuilding the editor cards while typing replaced the <input> under the
+// caret, so only the first character of anything typed survived.
+function render(){
+  renderItems();
+  renderLive();
+}
+
+function warnings(a){
+  return (a.package ? '' : '<p class="err" style="font-size:12.5px">نام بسته خالی است — این مورد در برنامه نادیده گرفته می‌شود.</p>')
+    + (a.image && a.image.indexOf('https://') !== 0
+        ? '<p class="err" style="font-size:12.5px">آدرس تصویر باید با https:// شروع شود، وگرنه برنامه آن را نادیده می‌گیرد.</p>' : '');
+}
+
+function renderItems(){
+  // --- editor cards ---
+  var h = '';
+  state.promo.apps.forEach(function(a,i){
+    h += '<div class="card">'
+      +  '<div class="row" style="justify-content:space-between">'
+      +    '<label style="margin:0"><input type="checkbox" '+(a.enabled?'checked':'')
+      +      ' onchange="setEnabled('+i+',this.checked)"> فعال باشد</label>'
+      +    '<button class="danger" onclick="removeItem('+i+')">حذف</button>'
+      +  '</div>'
+      +  '<div class="grid2">'
+      +    '<div>'+field(i,'title','عنوان','مثلاً هم‌ساز')+'</div>'
+      +    '<div>'+field(i,'package','نام بستهٔ بازار (بدون این، مورد نادیده گرفته می‌شود)','مثلاً ir.amgroup.hamsaz','ltr')+'</div>'
+      +  '</div>'
+      +  field(i,'pitch','متن تبلیغاتی (یک خط کوتاه، حداکثر دو سطر نمایش داده می‌شود)','مثلاً ۳۰۰ پرسش گفت‌وگو برای پیش از ازدواج')
+      +  '<div class="grid2">'
+      +    '<div>'+field(i,'image','آدرس تصویر (اختیاری، باید با https شروع شود)','مثلاً https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/hamsaz.png','ltr')+'</div>'
+      +    '<div>'+field(i,'accent','رنگ','مثلاً #6C4DF6','ltr')+'</div>'
+      +  '</div>'
+      +  '<div id="warn'+i+'">'+warnings(a)+'</div>'
+      +  '</div>';
+  });
+  document.getElementById('items').innerHTML = h ||
+    '<p class="muted">هنوز موردی اضافه نشده.</p>';
+}
+
+function renderLive(){
+  readFields();
+  state.promo.apps.forEach(function(a,i){
+    var w = document.getElementById('warn'+i);
+    if (w) w.innerHTML = warnings(a);
+  });
+
+  // --- preview, one bar per enabled item ---
+  var active = state.promo.apps.filter(function(a){ return a.enabled && a.package; });
+  document.getElementById('preview').innerHTML = active.length
+    ? active.map(function(a){
+        var c = /^#[0-9a-fA-F]{6}$/.test(a.accent) ? a.accent : '#6C4DF6';
+        var badge = a.image && a.image.indexOf('https://')===0
+          ? '<img class="badge" src="'+esc(a.image)+'" alt="" onerror="this.outerHTML=\'<div class=&quot;badge&quot; style=&quot;background:'+c+'&quot;>'+esc((a.title||'؟').charAt(0))+'</div>\'">'
+          : '<div class="badge" style="background:'+c+'">'+esc((a.title||'؟').charAt(0))+'</div>';
+        return '<div class="bar" style="border-color:'+c+'59;background:linear-gradient(90deg,'+c+'38,#171a2299)">'
+          + badge
+          + '<div class="texts"><div class="lbl">معرفی برنامه‌های ما</div>'
+          + '<div class="pitch">'+esc(a.pitch || a.title)+'</div></div>'
+          + '<div style="color:'+c+'">‹</div></div>';
+      }).join('<div style="height:10px"></div>')
+    : '<p class="muted">هیچ مورد قابل‌نمایشی نیست، پس نوار در برنامه اصلاً ظاهر نمی‌شود. '+ 'یک مورد وقتی نشان داده می‌شود که هم تیک «فعال باشد» را داشته باشد و هم '+ '<strong>نام بستهٔ بازار</strong>ش پر باشد. متن خاکستری داخل کادرها فقط نمونه است، نه مقدار واقعی.</p>';
+
+  document.getElementById('out').textContent = json();
+}
+
+function json(){
+  // Exported in the same shape the app parses, with `enabled:false` kept so a
+  // disabled entry can be switched back on later instead of being retyped.
+  return JSON.stringify({
+    update: state.update,
+    graphqlDocId: state.graphqlDocId,
+    promo: {
+      version: state.promo.version,
+      rotateSeconds: state.promo.rotateSeconds,
+      apps: state.promo.apps.map(function(a){
+        var o = { id:a.id||a.package, package:a.package, title:a.title,
+                  pitch:a.pitch, accent:a.accent, enabled:!!a.enabled };
+        if (a.image && a.image.indexOf('https://')===0) o.image = a.image;
+        return o;
+      })
+    }
+  }, null, 2);
+}
+
+// --------------------------------------------------------------------------
+// Saving straight to the site.
+//
+// The page has no server, so the write goes through the GitHub Contents API
+// with a token the person pastes. The token is deliberately NOT stored in
+// this file: this file is served from a public repository, so anything in it
+// is public. It lives in sessionStorage, which the browser drops when the tab
+// closes, and it is the real lock on the config — the login above only keeps
+// a passer-by out of the form.
+// --------------------------------------------------------------------------
+function token(){
+  var t = document.getElementById('tok').value.trim();
+  if (t) { try { sessionStorage.setItem('ghtok', t); } catch(e){} return t; }
+  try { return sessionStorage.getItem('ghtok') || ''; } catch(e){ return ''; }
+}
+
+function ghHeaders(t){
+  return { 'Authorization': 'Bearer ' + t,
+           'Accept': 'application/vnd.github+json',
+           'X-GitHub-Api-Version': '2022-11-28' };
+}
+
+// btoa() only takes code points below 256, and the config is full of Persian.
+function b64utf8(text){
+  var bytes = new TextEncoder().encode(text), bin = '';
+  for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
+async function saveToGithub(){
+  var t = token();
+  var btn = document.getElementById('pubBtn');
+  if (!t) { msg('pubMsg','اول توکن را بچسبانید.',false); return; }
+
+  btn.disabled = true;
+  msg('pubMsg','در حال ذخیره…',true);
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + FILE;
+
+  try {
+    // The API needs the sha of the file being replaced; without it GitHub
+    // treats the call as "create" and refuses because the file exists.
+    var sha = null;
+    var cur = await fetch(api + '?ref=' + BRANCH, {headers: ghHeaders(t), cache:'no-store'});
+    if (cur.status === 200) { sha = (await cur.json()).sha; }
+    else if (cur.status !== 404) { throw new Error(await ghError(cur)); }
+
+    var body = {
+      message: 'به‌روزرسانی app-config.json از پنل مدیریت',
+      content: b64utf8(json()),
+      branch: BRANCH
+    };
+    if (sha) body.sha = sha;
+
+    var r = await fetch(api, {
+      method: 'PUT', headers: ghHeaders(t), body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error(await ghError(r));
+
+    msg('pubMsg','ذخیره شد. چند دقیقه بعد روی سایت است و برنامه‌ها تا ۲۴ ساعت بعد می‌بینندش.',true);
+  } catch(e){
+    msg('pubMsg','ذخیره نشد: ' + e.message, false);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function ghError(r){
+  var m = '';
+  try { m = (await r.json()).message || ''; } catch(e){}
+  if (r.status === 401) return 'توکن پذیرفته نشد (۴۰۱). منقضی شده یا اشتباه چسبانده شده.';
+  if (r.status === 403) return 'توکن اجازهٔ نوشتن در این مخزن را ندارد (۴۰۳).';
+  if (r.status === 404) return 'مخزن یا مسیر پیدا نشد (۴۰۴) — یا توکن به این مخزن دسترسی ندارد.';
+  if (r.status === 409) return 'فایل روی سایت از این نسخه جلوتر است (۴۰۹). اول «خواندن از سایت» را بزنید.';
+  return 'HTTP ' + r.status + (m ? ' — ' + m : '');
+}
+
+function download(){
+  var b = new Blob([json()], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'app-config.json';
+  a.click();
+  msg('saveMsg','دانلود شد.',true);
+}
+
+async function copyJson(){
+  try { await navigator.clipboard.writeText(json()); msg('saveMsg','کپی شد.',true); }
+  catch(e){ msg('saveMsg','کپی نشد؛ از کادر پایین دستی بردارید.',false); }
+}
+
+function msg(id,text,ok){
+  var el = document.getElementById(id);
+  el.textContent = text;
+  el.className = ok ? 'ok' : 'err';
+}
+
+fillFields();
+</script>
+</body>
+</html>
