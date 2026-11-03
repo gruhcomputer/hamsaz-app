@@ -63,7 +63,7 @@
         "title": "سزامی",
         "pitch": "خرید از فروشگاه سزامی و پیگیری سلامت",
         "accent": "#00B56E",
-        "enabled": false
+        "enabled": true
       }
     ]
   }
