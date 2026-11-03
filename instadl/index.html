@@ -312,6 +312,14 @@ async function doLogin(){
   }
   document.getElementById('login').classList.add('hidden');
   document.getElementById('panel').classList.remove('hidden');
+  render();
+
+  // Read the live config straight away. The first version waited for the
+  // «خواندن از سایت» button and meanwhile added one blank row, so the panel
+  // opened looking as though nothing was being promoted — while three apps
+  // actually were. An admin panel that does not show the current state is
+  // worse than no panel.
+  await loadFromSite();
   if (!state.promo.apps.length) addItem();
   render();
 }
@@ -359,13 +367,23 @@ function loadFile(input){
 async function loadFromSite(){
   msg('loadMsg','در حال خواندن…',true);
   try {
-    var r = await fetch(SITE, {cache:'no-store'});
+    // Same cache-busting parameter the app uses: GitHub Pages serves this
+    // with max-age=600, and a panel showing a ten-minute-old list would
+    // happily save it back over a newer one.
+    var r = await fetch(SITE + '?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) throw new Error('HTTP ' + r.status);
     applyConfig(await r.json());
-    msg('loadMsg','از سایت خوانده شد.',true);
+    var n = state.promo.apps.length;
+    msg('loadMsg','از سایت خوانده شد — ' + n + ' مورد.',true);
   } catch(e){
-    // Expected while Pages is off, or from a network that cannot reach it.
-    msg('loadMsg','از سایت خوانده نشد (' + e.message + '). فایل را دستی بارگذاری کنید.',false);
+    if (location.protocol === 'file:') {
+      // A file:// page is not allowed to fetch anything over the network,
+      // so this is not a fault to go looking for.
+      msg('loadMsg','این صفحه از روی فایل باز شده و مرورگر اجازهٔ خواندن از '
+        + 'اینترنت نمی‌دهد. پنل را از آدرس سایت باز کنید.',false);
+    } else {
+      msg('loadMsg','از سایت خوانده نشد (' + e.message + '). فایل را دستی بارگذاری کنید.',false);
+    }
   }
 }
 
