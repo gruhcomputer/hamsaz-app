@@ -182,6 +182,34 @@
     نمی‌شود. راهنمای ساختن توکن محدود در <code>README.md</code> کنار همین فایل.
   </div>
 
+  <h2>تغییر رمز</h2>
+  <p class="muted">
+    رمز تازه را اینجا بدهید؛ پنل هشِ آن را می‌سازد و <strong>خودِ همین صفحه</strong>
+    را روی سایت بازنویسی می‌کند. رمز هیچ‌وقت جایی نوشته نمی‌شود، فقط هشش.
+  </p>
+  <div class="grid2">
+    <div>
+      <label>رمز تازه</label>
+      <input id="np1" type="password" class="ltr" autocomplete="new-password">
+    </div>
+    <div>
+      <label>یک بار دیگر</label>
+      <input id="np2" type="password" class="ltr" autocomplete="new-password">
+    </div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button onclick="changePassword()" id="pwBtn">عوض کن و روی سایت بگذار</button>
+    <span id="pwMsg" class="muted"></span>
+  </div>
+  <div class="note">
+    همان توکن بالا لازم است. تا وقتی گیت‌هاب صفحه را منتشر نکرده (یکی دو دقیقه)
+    <strong>رمز قبلی کار می‌کند</strong>، پس این تب را نبندید تا با رمز تازه یک
+    بار وارد شوید.
+    <br><br>
+    اگر روی کامپیوتر نسخه‌ای از این پوشه دارید، بعدش یک بار
+    <code>git pull</code> بزنید؛ وگرنه push بعدی‌تان رمز را به حالت قبل برمی‌گرداند.
+  </div>
+
   <h2>خروجی دستی</h2>
   <p class="muted">اگر نخواستید از توکن استفاده کنید:</p>
   <div class="row">
@@ -555,6 +583,95 @@ async function ghError(r){
   if (r.status === 404) return 'مخزن یا مسیر پیدا نشد (۴۰۴) — یا توکن به این مخزن دسترسی ندارد.';
   if (r.status === 409) return 'فایل روی سایت از این نسخه جلوتر است (۴۰۹). اول «خواندن از سایت» را بزنید.';
   return 'HTTP ' + r.status + (m ? ' — ' + m : '');
+}
+
+// --------------------------------------------------------------------------
+// Changing the password.
+//
+// The page rewrites its own source on the site: it reads index.html through
+// the API, swaps the SALT and HASH lines, and writes it back. A fresh random
+// salt each time, so two sites never share one, and so an old hash cannot be
+// matched against the new file.
+// --------------------------------------------------------------------------
+var PAGE = 'instadl/index.html';
+// A quote kept in a variable, so the patterns below cannot match this file.
+var Q = String.fromCharCode(39);
+
+function randomSalt(){
+  var b = new Uint8Array(12);
+  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(b);
+  else for (var i=0;i<b.length;i++) b[i] = Math.floor(Math.random()*256);
+  var out = 'instadl-admin-';
+  for (var j=0;j<b.length;j++) out += ('0'+b[j].toString(16)).slice(-2);
+  return out;
+}
+
+function fromB64utf8(b64){
+  var bin = atob(b64.replace(/\s/g,''));
+  var bytes = new Uint8Array(bin.length);
+  for (var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+async function changePassword(){
+  var p1 = document.getElementById('np1').value;
+  var p2 = document.getElementById('np2').value;
+  var btn = document.getElementById('pwBtn');
+
+  if (p1 !== p2)   { msg('pwMsg','دو رمز یکی نیستند.',false); return; }
+  if (p1.length < 10) { msg('pwMsg','رمز کوتاه است — دست‌کم ۱۰ نویسه.',false); return; }
+  var t = token();
+  if (!t) { msg('pwMsg','اول توکن را در بخش بالا بچسبانید.',false); return; }
+
+  btn.disabled = true;
+  msg('pwMsg','در حال نوشتن…',true);
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PAGE;
+
+  try {
+    var cur = await fetch(api + '?ref=' + BRANCH, {headers: ghHeaders(t), cache:'no-store'});
+    if (!cur.ok) throw new Error(await ghError(cur));
+    var meta = await cur.json();
+    var src  = fromB64utf8(meta.content);
+
+    var salt = randomSalt();
+    var hash = await sha256(salt + p1);
+
+    // Each line must appear exactly once, or we stop: writing a page nobody
+    // can log into is worse than not changing the password.
+    //
+    // The patterns are built with new RegExp, and the replacements are
+    // concatenated a character at a time, so that NEITHER appears literally
+    // in this file. Written the obvious way they matched their own source as
+    // well as the real lines, and the code below would have been rewriting
+    // itself — it happened to work only because the real lines come first.
+    var reSalt = new RegExp("var SALT = " + Q + "[^" + Q + "]*" + Q + ";", 'g');
+    var reHash = new RegExp("var HASH = " + Q + "[^" + Q + "]*" + Q + ";", 'g');
+    if ((src.match(reSalt) || []).length !== 1 ||
+        (src.match(reHash) || []).length !== 1) {
+      throw new Error('خطوط SALT/HASH یکتا نیستند؛ چیزی نوشته نشد.');
+    }
+    src = src.replace(reSalt, "var SALT = " + Q + salt + Q + ";")
+             .replace(reHash, "var HASH = " + Q + hash + Q + ";");
+
+    var r = await fetch(api, {
+      method: 'PUT', headers: ghHeaders(t),
+      body: JSON.stringify({
+        message: 'تغییر رمز پنل مدیریت',
+        content: b64utf8(src),
+        branch: BRANCH,
+        sha: meta.sha
+      })
+    });
+    if (!r.ok) throw new Error(await ghError(r));
+
+    document.getElementById('np1').value = '';
+    document.getElementById('np2').value = '';
+    msg('pwMsg','رمز عوض شد. یکی دو دقیقه بعد صفحه را تازه کنید و با رمز تازه وارد شوید.',true);
+  } catch(e){
+    msg('pwMsg','عوض نشد: ' + e.message, false);
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function download(){
