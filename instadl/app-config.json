@@ -55,7 +55,7 @@
         "title": "خودشناسی",
         "pitch": "۴۸ آزمون شخصیت با تفسیر فارسی",
         "accent": "#0E9F6E",
-        "enabled": false
+        "enabled": true
       },
       {
         "id": "sezame",
@@ -63,7 +63,7 @@
         "title": "سزامی",
         "pitch": "خرید از فروشگاه سزامی و پیگیری سلامت",
         "accent": "#00B56E",
-        "enabled": false
+        "enabled": true
       }
     ]
   }
