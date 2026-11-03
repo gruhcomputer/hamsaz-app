@@ -419,7 +419,7 @@ function setEnabled(i,val){ state.promo.apps[i].enabled=val; render(); }
 
 function esc(s){
   return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')
-    .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    .replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // Two levels of redraw. render() rebuilds everything and is used after a
@@ -476,8 +476,15 @@ function renderLive(){
   document.getElementById('preview').innerHTML = active.length
     ? active.map(function(a){
         var c = /^#[0-9a-fA-F]{6}$/.test(a.accent) ? a.accent : '#6C4DF6';
+        // The fallback badge is attached as a listener after rendering, never
+        // as an inline onerror. The old version built a JS string inside the
+        // attribute out of config data, and esc() does not escape an
+        // apostrophe - a title starting with one broke the handler. Only one
+        // character of the title reached it, so nothing could actually run,
+        // but this page holds a GitHub token in sessionStorage and is not the
+        // place to keep that kind of construct around.
         var badge = a.image && a.image.indexOf('https://')===0
-          ? '<img class="badge" src="'+esc(a.image)+'" alt="" onerror="this.outerHTML=\'<div class=&quot;badge&quot; style=&quot;background:'+c+'&quot;>'+esc((a.title||'؟').charAt(0))+'</div>\'">'
+          ? '<img class="badge" data-letter="'+esc((a.title||'؟').charAt(0))+'" data-accent="'+c+'" src="'+esc(a.image)+'" alt="">'
           : '<div class="badge" style="background:'+c+'">'+esc((a.title||'؟').charAt(0))+'</div>';
         return '<div class="bar" style="border-color:'+c+'59;background:linear-gradient(90deg,'+c+'38,#171a2299)">'
           + badge
@@ -486,6 +493,21 @@ function renderLive(){
           + '<div style="color:'+c+'">‹</div></div>';
       }).join('<div style="height:10px"></div>')
     : '<p class="muted">هیچ مورد قابل‌نمایشی نیست، پس نوار در برنامه اصلاً ظاهر نمی‌شود. '+ 'یک مورد وقتی نشان داده می‌شود که هم تیک «فعال باشد» را داشته باشد و هم '+ '<strong>نام بستهٔ بازار</strong>ش پر باشد. متن خاکستری داخل کادرها فقط نمونه است، نه مقدار واقعی.</p>';
+
+  // An image that fails to load falls back to the coloured square, exactly
+  // as the app does, so a broken URL never shows a broken-image icon here.
+  Array.prototype.forEach.call(
+    document.querySelectorAll('#preview img.badge'),
+    function(img){
+      img.addEventListener('error', function(){
+        var d = document.createElement('div');
+        d.className = 'badge';
+        d.style.background = img.getAttribute('data-accent');
+        d.textContent = img.getAttribute('data-letter');
+        if (img.parentNode) img.parentNode.replaceChild(d, img);
+      });
+    }
+  );
 
   document.getElementById('out').textContent = json();
 }
