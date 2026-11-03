@@ -25,20 +25,23 @@
     "promo                         the apps shown in the bottom bar; same",
     "                              shape as assets/promo/apps.json in the",
     "                              project. NEVER offer a reward for",
-    "                              installing — Bazaar bans that outright."
+    "                              installing — Bazaar bans that outright.",
+    "promo.apps[].summary          a few lines, shown only when the user",
+    "                              folds open the list inside the app.",
+    "promo.apps[].image            optional https icon. هم‌ساز and سزامی",
+    "                              ship their icons inside the APK and",
+    "                              ignore this; it is for an app added",
+    "                              here after the APK was built."
   ],
-
   "update": {
     "latestVersionCode": 1,
     "latestVersionName": "1.0.0",
     "minSupportedVersionCode": 0,
     "message": null
   },
-
   "graphqlDocId": null,
-
   "promo": {
-    "version": 1,
+    "version": 2,
     "rotateSeconds": 9,
     "apps": [
       {
@@ -46,6 +49,8 @@
         "package": "ir.amgroup.hamsaz",
         "title": "هم‌ساز",
         "pitch": "۳۰۰ پرسش گفت‌وگو برای پیش از ازدواج",
+        "summary": "پرسش‌هایی که معمولاً پیش از ازدواج از قلم می‌افتند: پول، خانواده، کار، بچه، اعتقادات و انتظارها. هر پرسش را جداگانه می‌بینید و دربارهٔ آن حرف می‌زنید، و پاسخ‌ها روی همان گوشی می‌ماند.",
+        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/hamsaz.png",
         "accent": "#6C4DF6",
         "enabled": true
       },
@@ -54,6 +59,7 @@
         "package": "ir.amgroup.khodshenasi",
         "title": "خودشناسی",
         "pitch": "۴۸ آزمون شخصیت با تفسیر فارسی",
+        "summary": "۴۸ آزمون شناخته‌شدهٔ شخصیت و خلق‌وخو، همه به فارسی و با تفسیری که واقعاً خوانده می‌شود. بدون ثبت‌نام و بدون فرستادن پاسخ‌ها به جایی.",
         "accent": "#0E9F6E",
         "enabled": true
       },
@@ -62,6 +68,8 @@
         "package": "ir.sezame.app",
         "title": "سزامی",
         "pitch": "خرید از فروشگاه سزامی و پیگیری سلامت",
+        "summary": "فروشگاه محصولات سزامی به‌همراه بخش پیگیری سلامت: سفارش‌هایتان را دنبال می‌کنید و یادداشت‌های سلامتی‌تان را یک‌جا دارید.",
+        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/sezame.png",
         "accent": "#00B56E",
         "enabled": true
       }

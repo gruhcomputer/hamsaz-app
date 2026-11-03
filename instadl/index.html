@@ -70,6 +70,7 @@
     object-fit:cover;overflow:hidden}
   .bar .texts{flex:1;min-width:0}
   .bar .lbl{font-size:10px;color:#a7aebe}
+  .bar .summary{font-size:11.5px;line-height:1.9;color:#555;margin-top:4px}
   .bar .pitch{font-size:13px;font-weight:600;overflow:hidden;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical}
   code{background:var(--surface2);padding:2px 6px;border-radius:6px;font-size:12.5px}
@@ -348,7 +349,8 @@ var SITE   = 'https://' + OWNER + '.github.io/' + REPO + '/' + FILE;
 function addItem(){
   state.promo.apps.push({
     id: 'app' + (state.promo.apps.length + 1),
-    package: '', title: '', pitch: '', accent: '#6C4DF6', image: '', enabled: true
+    package: '', title: '', pitch: '', summary: '', accent: '#6C4DF6',
+    image: '', enabled: true
   });
   render();
 }
@@ -396,7 +398,8 @@ function applyConfig(cfg){
     state.promo.apps = (cfg.promo.apps || []).map(function(a){
       return {
         id: a.id || '', package: a.package || '', title: a.title || '',
-        pitch: a.pitch || '', accent: a.accent || '#6C4DF6',
+        pitch: a.pitch || '', summary: a.summary || '',
+        accent: a.accent || '#6C4DF6',
         image: a.image || '', enabled: a.enabled !== false
       };
     });
@@ -431,6 +434,12 @@ function readFields(){
 function field(i, key, label, ph, cls){
   return '<label>'+label+'</label><input class="'+(cls||'')+'" value="'+esc(state.promo.apps[i][key])+
          '" placeholder="'+(ph||'')+'" oninput="setField('+i+',\''+key+'\',this.value)">';
+}
+// Same contract as field(), for the one field that is a paragraph.
+function area(i, key, label, ph){
+  return '<label>'+label+'</label><textarea rows="3" placeholder="'+(ph||'')+
+         '" oninput="setField('+i+',\''+key+'\',this.value)">'+
+         esc(state.promo.apps[i][key])+'</textarea>';
 }
 function setField(i,key,val){ state.promo.apps[i][key]=val; renderLive(); }
 function setEnabled(i,val){ state.promo.apps[i].enabled=val; render(); }
@@ -471,6 +480,7 @@ function renderItems(){
       +    '<div>'+field(i,'package','نام بستهٔ بازار (بدون این، مورد نادیده گرفته می‌شود)','مثلاً ir.amgroup.hamsaz','ltr')+'</div>'
       +  '</div>'
       +  field(i,'pitch','متن تبلیغاتی (یک خط کوتاه، حداکثر دو سطر نمایش داده می‌شود)','مثلاً ۳۰۰ پرسش گفت‌وگو برای پیش از ازدواج')
+      +  area(i,'summary','توضیح کامل (فقط وقتی کاربر فهرست برنامه‌ها را باز کند دیده می‌شود؛ حداکثر چهار سطر)','مثلاً پرسش‌هایی که معمولاً پیش از ازدواج از قلم می‌افتند: پول، خانواده، کار و انتظارها.')
       +  '<div class="grid2">'
       +    '<div>'+field(i,'image','آدرس تصویر (اختیاری، باید با https شروع شود)','مثلاً https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/hamsaz.png','ltr')+'</div>'
       +    '<div>'+field(i,'accent','رنگ','مثلاً #6C4DF6','ltr')+'</div>'
@@ -507,7 +517,10 @@ function renderLive(){
         return '<div class="bar" style="border-color:'+c+'59;background:linear-gradient(90deg,'+c+'38,#171a2299)">'
           + badge
           + '<div class="texts"><div class="lbl">معرفی برنامه‌های ما</div>'
-          + '<div class="pitch">'+esc(a.pitch || a.title)+'</div></div>'
+          + '<div class="pitch">'+esc(a.pitch || a.title)+'</div>'
+          + (a.summary && a.summary.trim()
+              ? '<div class="summary">'+esc(a.summary.trim())+'</div>' : '')
+          + '</div>'
           + '<div style="color:'+c+'">‹</div></div>';
       }).join('<div style="height:10px"></div>')
     : '<p class="muted">هیچ مورد قابل‌نمایشی نیست، پس نوار در برنامه اصلاً ظاهر نمی‌شود. '+ 'یک مورد وقتی نشان داده می‌شود که هم تیک «فعال باشد» را داشته باشد و هم '+ '<strong>نام بستهٔ بازار</strong>ش پر باشد. متن خاکستری داخل کادرها فقط نمونه است، نه مقدار واقعی.</p>';
@@ -542,6 +555,7 @@ function json(){
       apps: state.promo.apps.map(function(a){
         var o = { id:a.id||a.package, package:a.package, title:a.title,
                   pitch:a.pitch, accent:a.accent, enabled:!!a.enabled };
+        if (a.summary && a.summary.trim()) o.summary = a.summary.trim();
         if (a.image && a.image.indexOf('https://')===0) o.image = a.image;
         return o;
       })
