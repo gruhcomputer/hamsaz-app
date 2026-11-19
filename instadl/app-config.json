@@ -1,38 +1,4 @@
 {
-  "_comment": [
-    "Runtime config for دانلودیار (ir.amgroup.instadl).",
-    "",
-    "The app fetches this file once a day and caches it. Everything in it is",
-    "optional: a fetch that fails, times out, or returns malformed JSON leaves",
-    "the app running on its compiled-in defaults. That is deliberate, because",
-    "this host is not always reachable from Iran.",
-    "",
-    "HOW TO EDIT AFTER A RELEASE — see UPDATING.md next to this file.",
-    "",
-    "update.latestVersionCode      the versionCode now on Bazaar",
-    "update.minSupportedVersionCode  builds BELOW this are told they must",
-    "                              update. Raise it ONLY when an older build",
-    "                              genuinely cannot work any more. A forced",
-    "                              update that is merely convenient for us",
-    "                              bricks the app for someone who cannot",
-    "                              reach Bazaar right now.",
-    "update.message                optional one line shown instead of the",
-    "                              stock sentence. Plain text, no markup.",
-    "graphqlDocId                  set this when Instagram rotates its doc_id",
-    "                              and reels start resolving to a poster",
-    "                              image only. Fixes the app without waiting",
-    "                              days for a Bazaar review.",
-    "promo                         the apps shown in the bottom bar; same",
-    "                              shape as assets/promo/apps.json in the",
-    "                              project. NEVER offer a reward for",
-    "                              installing — Bazaar bans that outright.",
-    "promo.apps[].summary          a few lines, shown only when the user",
-    "                              folds open the list inside the app.",
-    "promo.apps[].image            optional https icon. هم‌ساز and سزامی",
-    "                              ship their icons inside the APK and",
-    "                              ignore this; it is for an app added",
-    "                              here after the APK was built."
-  ],
   "update": {
     "latestVersionCode": 1,
     "latestVersionName": "1.0.0",
@@ -49,29 +15,29 @@
         "package": "ir.amgroup.hamsaz",
         "title": "هم‌ساز",
         "pitch": "۳۰۰ پرسش گفت‌وگو برای پیش از ازدواج",
-        "summary": "پرسش‌هایی که معمولاً پیش از ازدواج از قلم می‌افتند: پول، خانواده، کار، بچه، اعتقادات و انتظارها. هر پرسش را جداگانه می‌بینید و دربارهٔ آن حرف می‌زنید، و پاسخ‌ها روی همان گوشی می‌ماند.",
-        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/hamsaz.png",
         "accent": "#6C4DF6",
-        "enabled": true
+        "enabled": true,
+        "summary": "پرسش‌هایی که معمولاً پیش از ازدواج از قلم می‌افتند: پول، خانواده، کار، بچه، اعتقادات و انتظارها. هر پرسش را جداگانه می‌بینید و دربارهٔ آن حرف می‌زنید، و پاسخ‌ها روی همان گوشی می‌ماند.",
+        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/hamsaz.png"
       },
       {
         "id": "khodshenasi",
         "package": "ir.amgroup.khodshenasi",
         "title": "خودشناسی",
         "pitch": "۴۸ آزمون شخصیت با تفسیر فارسی",
-        "summary": "۴۸ آزمون شناخته‌شدهٔ شخصیت و خلق‌وخو، همه به فارسی و با تفسیری که واقعاً خوانده می‌شود. بدون ثبت‌نام و بدون فرستادن پاسخ‌ها به جایی.",
         "accent": "#0E9F6E",
-        "enabled": true
+        "enabled": false,
+        "summary": "۴۸ آزمون شناخته‌شدهٔ شخصیت و خلق‌وخو، همه به فارسی و با تفسیری که واقعاً خوانده می‌شود. بدون ثبت‌نام و بدون فرستادن پاسخ‌ها به جایی."
       },
       {
         "id": "sezame",
         "package": "ir.sezame.app",
         "title": "سزامی",
         "pitch": "خرید از فروشگاه سزامی و پیگیری سلامت",
-        "summary": "فروشگاه محصولات سزامی به‌همراه بخش پیگیری سلامت: سفارش‌هایتان را دنبال می‌کنید و یادداشت‌های سلامتی‌تان را یک‌جا دارید.",
-        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/sezame.png",
         "accent": "#00B56E",
-        "enabled": true
+        "enabled": true,
+        "summary": "فروشگاه محصولات سزامی به‌همراه بخش پیگیری سلامت: سفارش‌هایتان را دنبال می‌کنید و یادداشت‌های سلامتی‌تان را یک‌جا دارید.",
+        "image": "https://gruhcomputer.github.io/hamsaz-app/instadl/assets/promo/sezame.png"
       }
     ]
   }
